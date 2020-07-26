@@ -31,7 +31,6 @@ def plotLightCurve(time, mag):
 	plt.show()
 
 def periodogram(time, mag):
-	print("bitch")
 	t, m = LombScargle(time, mag).autopower()
 	plt.plot(t, m)
 	plt.show()
@@ -73,23 +72,11 @@ elif av == "3":
 	averagePoints(julianDate, VC, 3)
 	plotLightCurve(jdAverage, magAverage)
 else:
-	av3 = raw_input("Average data 3x? (Y/N): ")
-	if av3 == "Y":
-		averagePoints(julianDate, VC, 3)
-		plotLightCurve(jdAverage, magAverage)
-	else:
-		print("Plotting all data...")
-		plotLightCurve(julianDate, VC)
-
-#lightcurve = Lightcurve(julianDate, VC, input_counts=False)
-#3print(lightcurve)
-
-"""
-Fourier Analysis:
- One can represent any recurring process as the combination of pure sine
- and cosine waves -- if one picks the right amplitudes and frequencies. The term
- "Fourier analysis" covers the many methods which shoot for this goal. There are
- many varieties: Fast Fourier Transforms (FFTs), and Discrete Fourier Transforms,
- to name just two. The basic idea is to convolve the observations with a set of
- pure sine and cosine waves and note the frequencies which produce a large result.
-"""
+	print("Plotting all data...")
+	plotLightCurve(julianDate, VC)
+	f = np.linspace(0.01, 300)
+	pgram = signal.lombscargle(julianDate, VC, f, normalize = True)
+	plt.plot(f, pgram)
+	plt.xlabel('Period (days)')
+	plt.ylabel('Lomb-Scargle Power')
+	plt.show()
