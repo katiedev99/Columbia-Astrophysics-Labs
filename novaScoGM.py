@@ -1,7 +1,8 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
-from stingray import Lightcurve, Powerspectrum, AveragedPowerspectrum
+import scipy.signal as signal
+#from astropy.timeseries import LombScargle
 
 file = 'sco974gm.txt'
 #file = raw_input("Filename: ")
@@ -11,8 +12,10 @@ with open(file) as f:
 
 header = data[0]
 index = 0
-julianDate = []  # truncate to xxx.yyyyy (has an accuracy of 0.000001 days (about 1 sec)
-VC = []  #truncate (if needed) to x.yyy (has an accuracy of 0.001 in magnitude)
+julianDate = []
+VC = []
+jdAverage = []
+magAverage = []
 
 for x in range(1, len(data)-2):
 	line = data[x]
@@ -27,8 +30,11 @@ def plotLightCurve(time, mag):
 	#plt.tick_params(axis='both', which='both', bottom=False, left=False, labelbottom=False, labelleft=False)
 	plt.show()
 
-jdAverage = []
-magAverage = []
+def periodogram(time, mag):
+	print("bitch")
+	t, m = LombScargle(time, mag).autopower()
+	plt.plot(t, m)
+	plt.show()
 
 def averagePoints(time, mag, x):
 	if x == 2:
@@ -57,9 +63,14 @@ def averagePoints(time, mag, x):
 			bAvg = (b + bx + bz) / 3
 			magAverage.append(bAvg)
 
-av = raw_input("Average data 2x? (Y/N): ")
-if av == "Y":
+#av = raw_input("Average data 2x or 3x? (2/3/N): ")
+av = "N"
+
+if av == "2":
 	averagePoints(julianDate, VC, 2)
+	plotLightCurve(jdAverage, magAverage)
+elif av == "3":
+	averagePoints(julianDate, VC, 3)
 	plotLightCurve(jdAverage, magAverage)
 else:
 	av3 = raw_input("Average data 3x? (Y/N): ")
